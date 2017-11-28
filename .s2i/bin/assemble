@@ -63,14 +63,8 @@ fi
 
 echo "---> Running 'yarn install ${YARN_OPTIONS}'"
 yarn install ${YARN_OPTIONS}
-echo "1"
-npm run copy-fonts
-echo "2"
-npm run copy-less
-echo "3"
-npm run copy-img
-echo "4"
-npm run build-css
+npm install -g serve
+npm run build
 echo "End build"
 
 # Fix source directory permissions
