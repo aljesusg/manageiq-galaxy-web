@@ -61,8 +61,6 @@ if [ -n "$NPM_MIRROR" ]; then
 	npm config set registry $NPM_MIRROR
 fi
 
-echo "---> Running 'run install'"
-npm install
 echo "---> Running 'run build'"
 npm run build
 
