@@ -62,7 +62,7 @@ if [ -n "$NPM_MIRROR" ]; then
 fi
 
 echo "---> Running 'run install'"
-npm run install
+npm install
 echo "---> Running 'run build'"
 npm run build
 
