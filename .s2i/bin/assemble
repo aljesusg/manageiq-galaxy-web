@@ -30,12 +30,6 @@ shopt -s dotglob
 echo "---> Installing application source ..."
 mv /tmp/src/* ./
 
-echo "Installing yarn"
-curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.2.1
-echo "Copying .yarn to app-root (bin and lib) to add it to path"
-cp -a $HOME/.yarn/. /opt/app-root
-
-
 if [ ! -z $HTTP_PROXY ]; then
     echo "---> Setting npm http proxy to" $(safeLogging $HTTP_PROXY)
 	npm config set proxy $HTTP_PROXY
@@ -61,12 +55,8 @@ if [ -n "$NPM_MIRROR" ]; then
 	npm config set registry $NPM_MIRROR
 fi
 
-echo "---> Running 'install'"
-yarn install
-echo "---> Running 'add serve'"
-yarn global add serve
-echo "---> Running 'run build'"
-yarn run build
+echo "---> Building your Node application from source"
+npm install
 
 # Fix source directory permissions
 fix-permissions ./
