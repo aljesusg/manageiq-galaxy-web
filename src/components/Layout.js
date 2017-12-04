@@ -1,16 +1,14 @@
 'use strict';
 
 import React from 'react';
-import { Link } from 'react-router';
+import Menu from './Nav/Menu';
 
 export default class Layout extends React.Component {
   render() {
     return (
       <div className="app-container">
         <header>
-          <Link to="/">
-            <img className="logo" src="/img/logo-judo-heroes.png"/>
-          </Link>
+          <Menu/>
         </header>
         <div className="app-content">{this.props.children}</div>
         <footer>
