@@ -3,6 +3,8 @@
 import React from 'react';
 import Menu from './Nav/Menu';
 
+const urlForApiVersion =`${ process.env.API_BACKEND}/api/version`
+
 export default class Layout extends React.Component {
   render() {
     return (
@@ -13,6 +15,8 @@ export default class Layout extends React.Component {
         <div className="app-content">{this.props.children}</div>
         <footer>
           <p>
+          { process.env.GITHUB_OAUTH_ID }
+          { process.env.GITHUB_REDIRECTUI }
             This is a demo app to showcase manageiq galaxy web with <strong>React</strong> and <strong>Express</strong>.
           </p>
           <p>
