@@ -4,7 +4,7 @@ import React from 'react';
 import { Navbar, Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router';
 import GitHubLogin from 'react-github-login';
-
+import config from '../../config'
 
 const onSuccess = response => {
     console.log(response)
@@ -42,8 +42,8 @@ export default class Menu extends React.Component {
         <Nav pullRight>
           <NavItem eventKey={1} href="#">Link Right</NavItem>
           <NavItem eventKey={2} href="#">Link Right</NavItem>
-          <GitHubLogin clientId="f49137725fc5870b0104"
-                redirectUri="http://localhost:8080/users/auth/github/callback"
+          <GitHubLogin clientId={ config[process.env.NODE_ENV].GITHUB_OAUTH_ID }
+                redirectUri= { config[process.env.NODE_ENV].GITHUB_REDIRECTUI }
                 onSuccess={onSuccess}
             onFailure={onFailure} buttonText="User login"/>
         </Nav>
