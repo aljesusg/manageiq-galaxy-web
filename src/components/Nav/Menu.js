@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import { Navbar, Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, MenuItem, NavDropdown, Col, Image } from 'react-bootstrap';
 import { Link } from 'react-router';
 import GitHubLogin from 'react-github-login';
 import config from '../../config'
@@ -10,24 +10,53 @@ import axios from 'axios';
 const urlbaseForApi =`${ config[process.env.NODE_ENV].API_BACKEND }/${ config[process.env.NODE_ENV].API_VERSION }`
 const urlForApiSignin =`${ urlbaseForApi}/users/sign_in`
 
-const onSuccess = response => {
-  console.log(response.code)
-    axios.post(urlForApiSignin,{},{ headers: { code: response.code}})
-    .then(response => {
-      sessionStorage.setItem('authentication_token', response.data.authentication_token);
-    })
-    .catch(error => {
-      console.log(error)
-    });
-    
-};
-const onFailure = response => {
-    console.error(response)
-};
+function sessionSave(data){
+  sessionStorage.setItem('authentication_token', data.authentication_token);
+  sessionStorage.setItem('github_id', data.user.github_id);
+  sessionStorage.setItem('github_login', data.user.github_login);
+  sessionStorage.setItem('github_avatar_url', data.user.github_avatar_url);
+  sessionStorage.setItem('karma', data.user.karma);
+  sessionStorage.setItem('name', data.user.name);  
+}
 
 export default class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleLoginSuccess = this.handleLoginSuccess.bind(this);
+    this.handleLogoutSuccess = this.handleLogoutSuccess.bind(this);
+    this.onFailure = this.onFailure.bind(this);
+    this.state = {
+      logged: false,
+      username: "",
+      avatar: ""
+    };
+  }
+
+  handleLoginSuccess(response){
+    console.log(response.code)
+      axios.post(urlForApiSignin,{},{ headers: { code: response.code}})
+      .then(response => {
+        sessionSave(response.data.data)
+        this.setState({logged: true});
+        this.setState({username: sessionStorage.getItem('github_login')});
+        this.setState({avatar: sessionStorage.getItem('github_avatar_url')});
+      })
+      .catch(error => {
+        console.log(error)
+      });
+      
+  };
+  handleLogoutSuccess(response){
+    console.log("logout")
+  }
+  onFailure(response){
+    console.error(response)
+  };
 
   render() {
+    const isLoggedIn = this.state.logged
+    const img =   this.state.username
+    const buttonlogged = <span> <Image height="10%" width="10%" src={this.state.avatar} circle/>  { this.state.username } </span>
     return (
       <div>
         <Navbar inverse collapseOnSelect>
@@ -52,12 +81,19 @@ export default class Menu extends React.Component {
           </NavDropdown>
         </Nav>
         <Nav pullRight>
-          <NavItem eventKey={1} href="#">Link Right</NavItem>
-          <NavItem eventKey={2} href="#">Link Right</NavItem>
-          <GitHubLogin clientId={ config[process.env.NODE_ENV].GITHUB_OAUTH_ID }
+          { isLoggedIn ? (
+            <NavDropdown eventKey={3} title={buttonlogged} id="basic-nav-dropdown">
+            <MenuItem eventKey={3.1}>Profile</MenuItem>
+            <MenuItem divider />
+            <MenuItem eventKey={3.2}>Logout</MenuItem>
+          </NavDropdown>
+          ) : (
+            <GitHubLogin clientId={ config[process.env.NODE_ENV].GITHUB_OAUTH_ID }
                 redirectUri= { config[process.env.NODE_ENV].GITHUB_REDIRECTUI }
-                onSuccess={onSuccess}
-            onFailure={onFailure} buttonText="User login"/>
+                onSuccess={this.handleLoginSuccess}
+                onFailure={this.onFailure} buttonText="Login"/>
+          )}
+          
         </Nav>
       </Navbar.Collapse>
     </Navbar>
