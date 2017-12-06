@@ -14,7 +14,11 @@ function sessionSave(data){
   sessionStorage.setItem('authentication_token', data.authentication_token);
   sessionStorage.setItem('github_id', data.user.github_id);
   sessionStorage.setItem('github_login', data.user.github_login);
+  sessionStorage.setItem('github_bio', data.user.github_bio);
+  sessionStorage.setItem('github_location', data.user.github_location);
+  sessionStorage.setItem('github_company', data.user.github_company);
   sessionStorage.setItem('github_avatar_url', data.user.github_avatar_url);
+  sessionStorage.setItem('github_html_url',data.user.github_html_url)
   sessionStorage.setItem('karma', data.user.karma);
   sessionStorage.setItem('name', data.user.name);  
 }
@@ -37,6 +41,7 @@ export default class Menu extends React.Component {
       axios.post(urlForApiSignin,{},{ headers: { code: response.code}})
       .then(response => {
         sessionSave(response.data.data)
+        console.log(response.data.data.user)
         this.setState({logged: true});
         this.setState({username: sessionStorage.getItem('github_login')});
         this.setState({avatar: sessionStorage.getItem('github_avatar_url')});
@@ -63,7 +68,7 @@ export default class Menu extends React.Component {
       <Navbar.Header>
         <Navbar.Brand>
           <Link to="/">
-            React-Bootstrap
+            ManageIQ Galaxy
           </Link>
         </Navbar.Brand>
         <Navbar.Toggle />
@@ -83,7 +88,7 @@ export default class Menu extends React.Component {
         <Nav pullRight>
           { isLoggedIn ? (
             <NavDropdown eventKey={3} title={buttonlogged} id="basic-nav-dropdown">
-            <MenuItem eventKey={3.1}>Profile</MenuItem>
+            <MenuItem eventKey={3.1} onClick={ () => this.props.showProfile()}>Profile</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey={3.2}>Logout</MenuItem>
           </NavDropdown>
