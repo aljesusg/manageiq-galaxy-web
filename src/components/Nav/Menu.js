@@ -5,9 +5,21 @@ import { Navbar, Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
 import { Link } from 'react-router';
 import GitHubLogin from 'react-github-login';
 import config from '../../config'
+import axios from 'axios';
+
+const urlbaseForApi =`${ config[process.env.NODE_ENV].API_BACKEND }/${ config[process.env.NODE_ENV].API_VERSION }`
+const urlForApiSignin =`${ urlbaseForApi}/users/sign_in`
 
 const onSuccess = response => {
-    console.log(response)
+  console.log(response.code)
+    axios.post(urlForApiSignin,{},{ headers: { code: response.code}})
+    .then(response => {
+      sessionStorage.setItem('authentication_token', response.data.authentication_token);
+    })
+    .catch(error => {
+      console.log(error)
+    });
+    
 };
 const onFailure = response => {
     console.error(response)
